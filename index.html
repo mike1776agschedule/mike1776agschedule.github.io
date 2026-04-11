@@ -456,7 +456,8 @@ const lo = v => norm(v).toLowerCase();
 function buildRows(src) {
   return src.map((r,i) => {
     const p = parseDate(r.Meeting_or_Event_Date);
-    return {...r, _i:i, _date:p, _month:p?monthKey(p):"Undated", _monthName:p?monthName(p):"", _search:Object.values(r).map(v=>lo(v)).join(" "), _id:`${norm(r.Source_URL)}::${i}`};
+    const stableKey = `${lo(norm(r.County))}::${lo(norm(r.Organization_or_Event_Name))}::${lo(norm(r.Meeting_or_Event_Date))}`;
+    return {...r, _i:i, _date:p, _month:p?monthKey(p):"Undated", _monthName:p?monthName(p):"", _search:Object.values(r).map(v=>lo(v)).join(" "), _id:stableKey};
   });
 }
 
@@ -735,6 +736,12 @@ function exportCalendarCSV() {
 }
 
 // ---- ITINERARY SYSTEM ----
+// Migrate old index-based IDs to content-based keys (v2)
+(function migrateItinerary(){
+  const raw=JSON.parse(localStorage.getItem("campaignItinerary")||"[]");
+  const hasOld=raw.some(id=>id.match(/::\d+$/));
+  if(hasOld){localStorage.removeItem("campaignItinerary");}
+})();
 const itinerary = new Set(JSON.parse(localStorage.getItem("campaignItinerary")||"[]"));
 function saveItinerary(){localStorage.setItem("campaignItinerary",JSON.stringify([...itinerary]));}
 function toggleItinerary(id){if(itinerary.has(id)){itinerary.delete(id);}else{itinerary.add(id);}saveItinerary();}
