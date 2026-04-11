@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Florida Ag Commissioner - Campaign Schedule & Outreach</title>
   <style>
     :root {
@@ -246,12 +249,28 @@
       .kpis { grid-template-columns: repeat(3,1fr); }
       .controls { grid-template-columns: 1fr 1fr; }
       .layout { grid-template-columns: 1fr; }
+      .region-panel { position: static !important; }
+      #detail-panel { margin-bottom: 14px; }
+      .layout { gap: 14px; }
     }
     @media (max-width: 600px) {
+      .shell { padding: 12px 10px 30px; }
+      .tab-bar { gap: 2px; padding: 4px; border-radius: 12px; overflow-x: auto; flex-wrap: nowrap; }
+      .tab-btn { font-size: 0.75rem; padding: 8px 10px; white-space: nowrap; }
       .kpis { grid-template-columns: repeat(2,1fr); }
       .controls { grid-template-columns: 1fr; }
       .priority-grid { grid-template-columns: 1fr; }
       .month-sub-bar { flex-wrap: wrap; }
+      .panel-head { padding: 14px 14px 0; }
+      .panel-body { padding: 14px; }
+      .detail-row { grid-template-columns: 100px 1fr; gap: 8px; padding: 9px 0; font-size: 0.84rem; }
+      .region summary { padding: 12px 14px; font-size: 0.92rem; }
+      .county-button { padding: 10px 12px; font-size: 0.88rem; }
+      .county-meta { font-size: 0.78rem; }
+      table { font-size: 0.78rem; }
+      th, td { padding: 9px 6px; }
+      .hero-card { padding: 14px; }
+      h1 { font-size: 1.6rem; }
     }
   </style>
 </head>
@@ -307,12 +326,12 @@
       <!-- status filter removed -->
     </div>
     <div class="layout">
-      <div class="panel" style="position:sticky;top:18px;">
+      <div class="panel region-panel">
         <div class="panel-head"><div><h2>Regions</h2><p>Browse by county. <span id="browser-count"></span></p></div></div>
         <div class="panel-body"><div id="group-browser" class="group-browser"></div></div>
       </div>
       <div>
-        <div class="panel">
+        <div class="panel" id="detail-panel">
           <div class="panel-head"><div><h2>Record Detail</h2><p>Click any row to view details.<span id="detail-status" style="display:none"></span></p></div></div>
           <div class="panel-body"><div id="detail-grid" class="detail-grid"></div></div>
         </div>
