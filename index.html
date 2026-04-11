@@ -486,7 +486,7 @@ function renderBrowser(view) {
       const filtered=filt();
       st.selectedId=filtered.find(r=>r.Region===st.region&&r.County===st.county)?._id??st.selectedId;
       sync();refresh();
-      document.querySelector("#tab-database").click();
+      document.querySelector('.tab-btn[data-tab="database"]').click();
       setTimeout(()=>{const detail=document.getElementById("detail-panel");if(detail)detail.scrollIntoView({behavior:"smooth",block:"start"});},100);
     });
   });
@@ -827,7 +827,7 @@ renderFilters();wireFilters();renderDetail(rows[0]||null);refresh();
         st.subcategory = "All";
         sync();
         refresh();
-        document.querySelector("#tab-database").click();
+        document.querySelector('.tab-btn[data-tab="database"]').click();
       });
     });
   }
