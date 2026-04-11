@@ -290,6 +290,10 @@
         </div>
       </div>
     </section>
+    <div id="home-categories" style="margin-top:32px;padding:0 24px;">
+      <h3 style="font-size:1.2rem;margin-bottom:16px;color:var(--sage);">Browse by Category</h3>
+      <div class="priority-grid" id="category-cards"></div>
+    </div>
   </div>
 
   <!-- ====== DATABASE TAB ====== -->
@@ -476,21 +480,15 @@ function renderBrowser(view) {
     return`<details class="region" open><summary><span>${region}</span><span class="region-meta">${counties.size} counties | ${[...counties.values()].flat().length} rows</span></summary><div class="county-list">${cm}</div></details>`;
   }).join("")||`<div class="empty-state">No regions match.</div>`;
   br.querySelectorAll(".county-button").forEach(btn=>{
-    btn.addEventListener("click",()=>{st.region=btn.dataset.region;st.county=btn.dataset.county;const filtered=filt();st.selectedId=filtered.find(r=>r.Region===st.region&&r.County===st.county)?._id??st.selectedId;sync();refresh();
-  // Subcategory click handler - filter by subcategory and switch to Database
-  document.getElementById("group-browser").addEventListener("click", function(e) {
-    const subItem = e.target.closest(".sub-item[data-sub]");
-    if (subItem) {
-      const sub = subItem.dataset.sub;
-      const region = subItem.dataset.region;
-      if (region) st.region = region;
-      st.subcategory = sub;
-      sync();
-      refresh();
+    btn.addEventListener("click",()=>{
+      st.region=btn.dataset.region;
+      st.county=btn.dataset.county;
+      const filtered=filt();
+      st.selectedId=filtered.find(r=>r.Region===st.region&&r.County===st.county)?._id??st.selectedId;
+      sync();refresh();
       document.querySelector("#tab-database").click();
-    }
-  });
-document.querySelector("#tab-database").click();setTimeout(()=>{const detail=document.getElementById("detail-panel");if(detail)detail.scrollIntoView({behavior:"smooth",block:"start"});},100);});
+      setTimeout(()=>{const detail=document.getElementById("detail-panel");if(detail)detail.scrollIntoView({behavior:"smooth",block:"start"});},100);
+    });
   });
   document.getElementById("browser-count").textContent=`${view.length} visible`;
 }
