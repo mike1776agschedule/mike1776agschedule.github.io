@@ -880,7 +880,7 @@ function renderPriorities() {
     const cr = rows.filter(r=>r.County===c.county);
     const d = cr.filter(r=>r._date).length;
     const p = cr.filter(r=>r.Phone&&r.Phone!=="Unverified").length;
-    return `<li><strong>#${i+1} ${c.county}</strong> - ${c.turnout} ballots (${c.pct}) | ${cr.length} records, ${d} dated events, ${p} with phone</li>`;
+    return `<li><strong>#${i+1} ${c.county}</strong> - ${c.turnout} ballots (${c.pct})</li>`;
   }).join("");
 
   const categorySummary = {};
