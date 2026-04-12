@@ -563,7 +563,6 @@ function renderDetail(r) {
     dRow("Location",`${safe(r.Venue,"")||"—"}<div class="muted-line">${safe(r.City,"")}</div>`),
     dRow("Schedule",[safe(r.Meeting_or_Event_Date,""),safe(r.Meeting_or_Event_Time,""),safe(r.Recurrence,"")].filter(Boolean).join(" | ")||"—"),
     dRow("Contact",[safe(r.Contact_Name,""),safe(r.Contact_Title,""),safe(r.Email,""),safe(r.Phone,"")].filter(Boolean).join(" | ")||"—"),
-    dRow("Website",link(r.Website)),
     dRow("Source",link(r.Source_URL)),
     r.Notes?dRow("Notes",norm(r.Notes)):"",
     dRow("Itinerary",`<button class="itin-add-btn" data-itin-id="${r._id}" style="width:auto;height:auto;padding:6px 14px;font-size:0.82rem;">${itinerary.has(r._id)?"✓ In Itinerary":"+ Add to Itinerary"}</button>`),
