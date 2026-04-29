@@ -313,6 +313,7 @@
     <button class="tab-btn" data-tab="database">Database</button>
     <button class="tab-btn" data-tab="calendar">Calendar</button>
     <button class="tab-btn" data-tab="itinerary">My Itinerary</button>
+    <button class="tab-btn" data-tab="calllist">Call List</button>
     <button class="tab-btn" data-tab="priorities">Priorities</button>
   </nav>
 
@@ -405,6 +406,23 @@
       <div class="panel-body">
         <div id="itinerary-empty" class="empty-state">No events added yet. Browse the Database or Calendar and click the + button to add events to your itinerary.</div>
         <div id="itinerary-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== CALL LIST TAB ====== -->
+  <div id="tab-calllist" class="tab-page">
+    <div class="panel">
+      <div class="panel-head">
+        <div><h2>Weekly Call List</h2><p>Confirm upcoming events with their points of contact. Showing events in the <strong>next 7 days</strong>. <span id="calllist-count">0 events</span></p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="export-btn" id="export-calllist-btn">Export Call List CSV</button>
+          <button class="export-btn" id="print-calllist-btn" style="border-color:var(--sage);color:var(--sage);">Print Call List</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="calllist-empty" class="empty-state">No events in the next 7 days with contact info.</div>
+        <div id="calllist-grid"></div>
       </div>
     </div>
   </div>
@@ -504,6 +522,7 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
     if(btn.dataset.tab==="priorities") renderPriorities();
     if(btn.dataset.tab==="calendar") renderCalendar(filt());
     if(btn.dataset.tab==="itinerary") renderItinerary();
+    if(btn.dataset.tab==="calllist") renderCallList();
   });
 });
 
@@ -837,6 +856,85 @@ document.getElementById("export-itinerary-btn").addEventListener("click",exportI
 document.getElementById("print-itinerary-btn").addEventListener("click",()=>{
   document.querySelector('.tab-btn[data-tab="itinerary"]').click();
   setTimeout(()=>window.print(),200);
+});
+
+// ---- CALL LIST (next 7 days, events with contacts) ----
+function getCallListItems(){
+  const today = new Date();
+  const todayUTC = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+  const weekEnd = new Date(todayUTC); weekEnd.setUTCDate(weekEnd.getUTCDate() + 7);
+  return rows.filter(r => {
+    if (!r._date) return false;
+    if (r._date < todayUTC || r._date > weekEnd) return false;
+    const hasContact = norm(r.Contact_Name) || norm(r.Phone) || norm(r.Email);
+    return hasContact;
+  }).sort((a,b) => a._date - b._date);
+}
+
+function renderCallList(){
+  const items = getCallListItems();
+  const empty = document.getElementById("calllist-empty");
+  const grid = document.getElementById("calllist-grid");
+  const count = document.getElementById("calllist-count");
+  count.textContent = `${items.length} event${items.length===1?"":"s"}`;
+  if(!items.length){empty.style.display="";grid.innerHTML="";return;}
+  empty.style.display="none";
+
+  // Group by date
+  const byDay = new Map();
+  for(const r of items){
+    const dk = r._date.toISOString().slice(0,10);
+    if(!byDay.has(dk)) byDay.set(dk, {date:r._date, items:[]});
+    byDay.get(dk).items.push(r);
+  }
+
+  const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  let html = "";
+  for(const [dk, day] of byDay){
+    const d = day.date;
+    const dayLabel = `${DAYS[d.getUTCDay()]}, ${fmtDate(d,{month:"long",day:"numeric",year:"numeric"})}`;
+    html += `<div class="itin-day"><div class="itin-day-head">${dayLabel}</div>`;
+    for(const r of day.items){
+      const time = safe(r.Meeting_or_Event_Time,"");
+      const loc = [safe(r.Venue,""),safe(r.City,"")].filter(Boolean).join(", ");
+      const contactName = safe(r.Contact_Name,"");
+      const contactTitle = safe(r.Contact_Title,"");
+      const phone = norm(r.Phone);
+      const email = norm(r.Email);
+      const phoneHTML = phone ? `<a class="source-link" href="tel:${phone.replace(/[^0-9+]/g,"")}">${phone}</a>` : "";
+      const emailHTML = email ? `<a class="source-link" href="mailto:${email}">${email}</a>` : "";
+      html += `<div class="itin-item">
+        <div class="itin-item-body">
+          <div class="itin-item-title">${norm(r.Organization_or_Event_Name)}</div>
+          <div class="itin-item-meta">
+            ${r.County} County | ${norm(r.Category)} / ${norm(r.Subcategory)}<br>
+            ${time?`<strong>Time:</strong> ${time}<br>`:""}
+            ${loc?`<strong>Location:</strong> ${loc}<br>`:""}
+            ${contactName?`<strong>POC:</strong> ${contactName}${contactTitle?`, ${contactTitle}`:""}<br>`:""}
+            ${phoneHTML?`<strong>Phone:</strong> ${phoneHTML}<br>`:""}
+            ${emailHTML?`<strong>Email:</strong> ${emailHTML}`:""}
+          </div>
+        </div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function exportCallListCSV(){
+  const items = getCallListItems();
+  const keys = ["Meeting_or_Event_Date","Meeting_or_Event_Time","County","Organization_or_Event_Name","Contact_Name","Contact_Title","Phone","Email","Venue","City","Recurrence","Notes"];
+  const headers = ["Date","Time","County","Organization","POC Name","POC Title","Phone","Email","Venue","City","Recurrence","Notes"];
+  const csv = [headers.join(","), ...items.map(r => keys.map(k => `"${String(r[k]||"").replace(/"/g,'""')}"`).join(","))];
+  const blob = new Blob([csv.join("\n")], {type:"text/csv"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "weekly_call_list.csv"; a.click();
+}
+
+document.getElementById("export-calllist-btn").addEventListener("click", exportCallListCSV);
+document.getElementById("print-calllist-btn").addEventListener("click", () => {
+  document.querySelector('.tab-btn[data-tab="calllist"]').click();
+  setTimeout(() => window.print(), 200);
 });
 document.getElementById("clear-itinerary-btn").addEventListener("click",()=>{
   itinerary.clear();saveItinerary();renderItinerary();refresh();
