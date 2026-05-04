@@ -1,0 +1,16 @@
+# Raw and intermediate data — never commit voter PII or contact lists
+data/raw/
+data/clean/
+outputs/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# osmnx cache
+_osmnx_cache/
+
+# OS junk
+.DS_Store
