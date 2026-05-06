@@ -335,7 +335,7 @@
           <p>Political Infrastructure | Ag Associations | Law Enforcement & Public Safety | Business Orgs | County Fairs & Festivals | Local Events</p>
         </div>
         <div class="hero-card">
-          <strong>April &ndash; August 2026</strong>
+          <strong>May &ndash; August 2026</strong>
           <p>Primary window fully staffed with weekly itineraries, monthly breakdowns, and Google Calendar CSV export.</p>
         </div>
       </div>
@@ -442,8 +442,8 @@ window.FL_AG_CAMPAIGN_DATA = [{"Region": "Northwest Florida", "County": "Bay", "
 
 const REGION_ORDER = ["All","Northwest Florida","North Central Florida","Northeast Florida","Central Florida","Southwest Florida","South Florida"];
 /* STATUS_ORDER removed */
-const MONTHS = ["April 2026","May 2026","June 2026","July 2026","August 2026"];
-const MONTH_TABS = ["All","April","May","June","July","August"];
+const MONTHS = ["May 2026","June 2026","July 2026","August 2026"];
+const MONTH_TABS = ["All","May","June","July","August"];
 const monthLookup = {january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
 
 const REGION_TURNOUT = {
@@ -617,7 +617,7 @@ function renderTable(view) {
 }
 
 function renderCalendar(view) {
-  const winStart = new Date(Date.UTC(2026,3,1));
+  const winStart = new Date(Date.UTC(2026,4,1));
   const winEnd = new Date(Date.UTC(2026,7,31));
 
   // Filter out non-campaign events
@@ -650,7 +650,7 @@ function renderCalendar(view) {
   });
 
   const filteredDated = st.calMonth === "All" ? dated : dated.filter(r => r._monthName === st.calMonth);
-  document.getElementById("calendar-count").textContent = `${filteredDated.length} events \u2014 April through August 2026`;
+  document.getElementById("calendar-count").textContent = `${filteredDated.length} events \u2014 May through August 2026`;
 
   function getWeekKey(d) {
     const day = d.getUTCDay();
@@ -728,7 +728,7 @@ function renderCalendar(view) {
 }
 
 function exportCalendarCSV() {
-  const winStart = new Date(Date.UTC(2026,3,1));
+  const winStart = new Date(Date.UTC(2026,4,1));
   const winEnd = new Date(Date.UTC(2026,7,31));
   const dated = rows.filter(r=>r._date&&r._date>=winStart&&r._date<=winEnd).sort((a,b)=>a._date-b._date);
   const headers = ["Subject","Start Date","Start Time","End Time","All Day Event","Description","Location"];
