@@ -1,0 +1,26 @@
+# Decrypted local data — NEVER commit
+data/
+*.decrypted.json
+*.records.json
+
+# Environment / secrets
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# macOS / editors
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Scratch
+/tmp/
+scratch/
