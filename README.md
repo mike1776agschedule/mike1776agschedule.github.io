@@ -78,15 +78,15 @@ python3 scripts/deploy.py "..." # 5. Commit + push (deploys via GitHub Pages)
 
 ## Common Makefile targets
 
-| Command             | What it does                                                     |
-| ------------------- | ---------------------------------------------------------------- |
-| `make decrypt`      | Decrypt live HTML → `data/records.json`                          |
-| `make encrypt`      | Encrypt `data/records.json` → both HTML files                    |
-| `make audit`        | Run all 8 QC checks against live data                            |
-| `make roll-forward` | Roll past dates to next monthly occurrence                       |
-| `make dedupe`       | Remove duplicate records                                         |
-| `make refresh`      | Full pipeline: decrypt → roll-forward → dedupe → encrypt → audit |
-| `make help`         | Print this menu                                                  |
+| Command | What it does |
+|---|---|
+| `make decrypt` | Decrypt live HTML → `data/records.json` |
+| `make encrypt` | Encrypt `data/records.json` → both HTML files |
+| `make audit` | Run all 8 QC checks against live data |
+| `make roll-forward` | Roll past dates to next monthly occurrence |
+| `make dedupe` | Remove duplicate records |
+| `make refresh` | Full pipeline: decrypt → roll-forward → dedupe → encrypt → audit |
+| `make help` | Print this menu |
 
 ## How the page works (30-second version)
 
@@ -114,11 +114,11 @@ Full details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Production credentials
 
-| What                | Where                                                                      |
-| ------------------- | -------------------------------------------------------------------------- |
-| Access PIN          | `040476` — needed for `FL_AG_PIN` env var and to view the live site        |
-| GitHub push         | The owner of `mike1776agschedule.github.io` must add you as a collaborator |
-| GitHub Pages config | Settings → Pages → Source: `main` branch, root `/`                         |
+| What | Where |
+|---|---|
+| Access PIN | `040476` — needed for `FL_AG_PIN` env var and to view the live site |
+| GitHub push | The owner of `mike1776agschedule.github.io` must add you as a collaborator |
+| GitHub Pages config | Settings → Pages → Source: `main` branch, root `/` |
 
 ## Questions?
 
