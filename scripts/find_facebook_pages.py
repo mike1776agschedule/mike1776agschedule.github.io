@@ -129,7 +129,12 @@ def decode_ddg_href(href):
 
 
 def fb_handle(url):
-    """Return the first path segment of a facebook.com URL, or None."""
+    """Return the identifying handle of a facebook.com URL, or None.
+
+    Accepts org pages (facebook.com/Name -> 'Name'), GROUPS
+    (facebook.com/groups/<id> -> 'groups/<id>'), and /p/ pages
+    (facebook.com/p/Name-123 -> 'Name-123'). Groups are what we want most.
+    """
     from urllib.parse import urlparse
     p = urlparse(url)
     if "facebook.com" not in p.netloc:
@@ -137,10 +142,14 @@ def fb_handle(url):
     seg = [s for s in p.path.split("/") if s]
     if not seg:
         return None
-    handle = seg[0]
-    if handle.lower() in FB_BLOCKLIST:
+    head = seg[0].lower()
+    if head == "groups":
+        return "groups/" + seg[1] if len(seg) > 1 else None
+    if head == "p" and len(seg) > 1:
+        return seg[1]
+    if head in FB_BLOCKLIST:
         return None
-    return handle
+    return seg[0]
 
 
 def _is_challenge(body):
@@ -240,13 +249,20 @@ def search_facebook(query, sleep_after, timeout=20, retries=3, brave_key=None):
 
 
 def best_match(org_name, candidates):
-    """Pick the highest-scoring facebook candidate. Returns (url, handle, score)."""
+    """Pick the best facebook candidate, preferring GROUPS. Returns (url, handle, score)."""
     best = (None, None, 0)
+    best_eff = -1
     for url, text in candidates:
         handle = fb_handle(url)
-        # Score against both the visible link text and the handle itself.
-        score = max(similarity(org_name, text), similarity(org_name, handle))
-        if score > best[2]:
+        if not handle:
+            continue
+        # Score against the visible link text and the handle (sans 'groups/' prefix).
+        base = handle.split("groups/")[-1]
+        score = max(similarity(org_name, text), similarity(org_name, base))
+        # Groups are the goal — give them an edge so a group beats a page on a tie.
+        eff = score + (10 if handle.startswith("groups/") else 0)
+        if eff > best_eff:
+            best_eff = eff
             best = (url, handle, score)
     return best
 
@@ -332,7 +348,7 @@ def main():
             })
             continue
 
-        query = f'{name} {city} Florida facebook'
+        query = f'{name} {city} Florida facebook group'
         candidates, err = search_facebook(query, args.sleep, brave_key=brave_key)
         if err:
             sys.stderr.write(f"[{i}/{len(orgs)}] {name} -> {err}\n")
