@@ -16,7 +16,7 @@ SCHEMA = [
     "Region", "County", "Category", "Subcategory", "Record_Classification",
     "Organization_or_Event_Name", "Contact_Name", "Contact_Title", "Email", "Phone",
     "Website", "Meeting_or_Event_Date", "Meeting_or_Event_Time", "Recurrence", "Venue",
-    "City", "Notes", "Source_URL", "Priority_Tier", "Priority_Label",
+    "City", "Notes", "Source_URL", "Facebook_URL", "Priority_Tier", "Priority_Label",
 ]
 
 ENCRYPTED_BLOCK_RE = re.compile(r"window\.FL_AG_ENCRYPTED\s*=\s*\{(.*?)\};", re.DOTALL)

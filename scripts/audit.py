@@ -5,7 +5,7 @@ Run quality-control checks against the live encrypted data and print a report.
 Read-only — does not modify any files.
 
 Checks:
-  1. Schema integrity (every record has exactly 20 canonical fields)
+  1. Schema integrity (every record has exactly the canonical fields)
   2. Past-dated events (anything before today)
   3. Dates outside the May–Aug 2026 campaign window
   4. Recurrence math (does the date match the recurrence pattern?)
@@ -73,7 +73,7 @@ def main():
             print(f"    [{b[0]}] missing={b[1]} extra={b[2]}")
         issues_total += len(bad)
     else:
-        print("  PASS: all records match canonical 20-field schema")
+        print(f"  PASS: all records match canonical {len(SCHEMA)}-field schema")
 
     # 2. Past-dated
     header("2. Past-dated events")

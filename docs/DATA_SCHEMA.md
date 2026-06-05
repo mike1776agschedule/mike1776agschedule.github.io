@@ -1,6 +1,6 @@
 # Data Schema
 
-Every record in the dataset has exactly **20 fields**, in this order:
+Every record in the dataset has exactly **21 fields**, in this order:
 
 | # | Field | Type | Required | Example | Notes |
 |---|---|---|---|---|---|
@@ -22,8 +22,9 @@ Every record in the dataset has exactly **20 fields**, in this order:
 | 16 | `City` | string | no | `Pensacola` | |
 | 17 | `Notes` | string | no | `Public meeting. RSVP not required.` | Anything else. |
 | 18 | `Source_URL` | string | yes | `https://florida.gop/republican-parties/escambia/` | Where this data was verified. |
-| 19 | `Priority_Tier` | integer | yes | `3` | 0–4. 0 = unrated, 4 = top. |
-| 20 | `Priority_Label` | string | no | `Strong Impact` | Maps to tier. |
+| 19 | `Facebook_URL` | string | no | `https://www.facebook.com/groups/swbrogop/` | Org's Facebook page or group. Added 2026-06; used for human verification of dates that only live on Facebook. |
+| 20 | `Priority_Tier` | integer | yes | `3` | 0–4. 0 = unrated, 4 = top. |
+| 21 | `Priority_Label` | string | no | `Strong Impact` | Maps to tier. |
 
 ## Region values (exactly 6)
 
@@ -61,7 +62,7 @@ script enforces this.
 
 ## Schema enforcement
 
-- `scripts/encrypt.py` automatically normalizes every record to the 20-field
+- `scripts/encrypt.py` automatically normalizes every record to the 21-field
   schema in canonical order, filling missing fields with `""` (or `0` for
   `Priority_Tier`). You cannot ship a malformed record.
 - `scripts/audit.py` Check #1 verifies schema integrity against the live blob.
