@@ -17,7 +17,7 @@ Usage:  python scripts/build_event_worklist.py
 import json
 from datetime import datetime, date
 
-WINDOW = (date(2026, 6, 4), date(2026, 6, 10))
+WINDOW = (date(2026, 6, 11), date(2026, 6, 17))
 
 def parse(s):
     for f in ("%B %d, %Y", "%b %d, %Y"):
